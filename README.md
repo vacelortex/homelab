@@ -31,12 +31,12 @@ This README is a running log of what I set up and why.
 ### 2. Base configuration
 
 - Updated all packages: `sudo apt update && sudo apt full-upgrade`
-- Stopped the laptop suspending when the lid is closed, using a systemd-logind drop-in. See [`configs/logind/lid.conf`](configs/logind/lid.conf).
+- Stopped the laptop suspending when the lid is closed, using a systemd-logind drop-in. See [`config/logind/lid.conf`](config/logind/lid.conf).
 
 ### 3. SSH hardening
 
 - Added my ed25519 public key to `~/.ssh/authorized_keys` on the server.
-- Disabled password authentication and root login over SSH with a drop-in config. See [`configs/ssh/hardening.conf`](configs/ssh/hardening.conf).
+- Disabled password authentication and root login over SSH with a drop-in config. See [`config/ssh/hardening.conf`](config/ssh/hardening.conf).
   - Why: a key cannot be guessed, while a password on an open SSH port is a constant target for brute-force attempts.
 - Verified the change:
   - `ssh user@host` logs in with the key.
@@ -85,7 +85,7 @@ sudo bash scripts/add-user.sh <username> '<their public key line>'
 ### 7. Docker
 
 - Installed Docker Engine and the Compose plugin from Docker's official apt repository, following the official instructions for Debian.
-  - The repository is tied to Docker's signing key with a `Signed-By` line, so apt only accepts packages signed by that key. See [`configs/apt/docker.sources`](configs/apt/docker.sources).
+  - The repository is tied to Docker's signing key with a `Signed-By` line, so apt only accepts packages signed by that key. See [`config/apt/docker.sources`](config/apt/docker.sources).
 - Verified with `sudo docker run hello-world`.
 - No users are in the `docker` group. Docker commands are run with `sudo`.
   - Why: membership in the `docker` group is effectively root on the host, which matters when other people have accounts.
@@ -106,7 +106,7 @@ sudo bash scripts/add-user.sh <username> '<their public key line>'
 ## Config files
 
 ```
-configs/
+config/
   logind/lid.conf        -> /etc/systemd/logind.conf.d/lid.conf
   ssh/hardening.conf     -> /etc/ssh/sshd_config.d/hardening.conf
   apt/docker.sources     -> /etc/apt/sources.list.d/docker.sources
