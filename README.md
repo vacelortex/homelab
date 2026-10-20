@@ -135,3 +135,5 @@ scripts/
 - `Permission denied (publickey)` with the right username means the key offered by the client does not match the one on the server. Comparing fingerprints with `ssh-keygen -lf` on both sides finds it faster than comparing the keys by eye.
 - WSL has its own home folder and `~/.ssh`, separate from the Windows side, so a key made in one is not used by the other.
 - `su` asks for the target account's password, not mine. With root disabled and key-only accounts, `sudo -i` and `sudo -u <user> -i` are the way to switch user.
+- - On Debian, admin tools like `sysctl` live in `/usr/sbin`, which is not in a normal user's path, so they are only found when run with `sudo`.
+- Binding a container port to a specific address (`100.x.y.z:53:53`) is how to limit who can reach it when Docker bypasses the firewall.
