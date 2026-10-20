@@ -91,11 +91,26 @@ sudo bash scripts/add-user.sh <username> '<their public key line>'
   - Why: membership in the `docker` group is effectively root on the host, which matters when other people have accounts.
 - Container ports are only published when they need to be reachable, and admin ports are bound to `127.0.0.1` or not published at all.
 
+### 8. Pi-hole (DNS filtering)
+
+- Runs Pi-hole in Docker. The compose file is in [`services/pihole/compose.yaml`](services/pihole/compose.yaml).
+- Every published port (DNS on 53, the admin page on 8080) is bound to the server's Tailscale address only.
+  - Why: Docker publishes ports past ufw, so a plain `53:53` would expose DNS to the whole home network. An open DNS resolver can also be abused for amplification attacks.
+- The Tailscale address and admin password live in a `.env` file on the server (`chmod 600`, not committed). See [`.env.example`](services/pihole/.env.example).
+- No extra container capabilities. Pi-hole's own example adds `NET_ADMIN` and `SYS_TIME`, which are only needed for DHCP or time service.
+- Upstream DNS is Quad9, which also blocks known malware domains.
+- Set `net.ipv4.ip_nonlocal_bind=1` so Docker can bind to the Tailscale address even if Docker starts before Tailscale at boot.
+- Ran `tailscale set --accept-dns=false` on the server so it does not use its own Pi-hole for DNS.
+- Set Pi-hole as my tailnet's nameserver in the Tailscale admin console with "Override DNS servers" on, so my devices get blocking on any network.
+- Verified with `nslookup`: normal domains resolve, and ad domains such as `doubleclick.net` return `0.0.0.0`.
+- Fallback: turning off "Override DNS servers" returns all devices to normal DNS.
+
 ## Services
 
 | Service | Repo |
 |---|---|
 | Minecraft server (Docker) | [mikkeliski/secure-mc](https://github.com/mikkeliski/secure-mc) |
+| Pi-hole (DNS filtering, Docker) | This repo, [section 8](#8-pi-hole-dns-filtering) |
 
 ## Planned
 
