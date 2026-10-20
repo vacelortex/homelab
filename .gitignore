@@ -14,3 +14,4 @@ backups/
 *.tar.gz
 *.zip
 
+etc-pihole/
